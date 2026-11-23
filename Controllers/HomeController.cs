@@ -15,6 +15,12 @@ public class HomeController : Controller
     {
         _logger = logger;
         _hub = hub;
+
+        _ = Task.Run(async() => {
+
+            Task.Delay(10000).Wait();
+            await SendNotification();
+        });
     }
 
     public async Task<IActionResult> SendNotification()
