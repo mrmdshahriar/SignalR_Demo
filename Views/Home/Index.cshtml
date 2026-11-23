@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<script>
+
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationHub")
+        .withAutomaticReconnect()
+        .build();
+
+    connection.on("ReceiveMessage", function (message) {
+        alert(message);
+    });
+
+    connection.start().catch(err => console.error(err));
+
+
+    async function sendNotification() {
+
+        const response = await fetch('/Home/SendNotification', {
+            method: 'GET'
+        });
+
+        const result = await response.text();
+
+        console.log(result);
+    }
+</script>
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<button onclick="sendNotification()">
+    Send Notification
+</button>
