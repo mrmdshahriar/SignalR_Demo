@@ -28,7 +28,9 @@ app.UseCors();
 
 app.UseAuthorization();
 
-app.MapHub<NotificationHub>("/notificationHub");
+//app.MapHub<NotificationHub>("/notificationHub");
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.MapControllerRoute(
     name: "default",

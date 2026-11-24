@@ -1,6 +1,163 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "SignalR Chat";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h4>SignalR Real-Time Chat</h4>
+            <span id="connectionStatus">Connecting...</span>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                <label class="form-label">Your Name</label>
+                <input type="text"
+                       id="userInput"
+                       class="form-control"
+                       placeholder="Enter your name" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Message</label>
+                <input type="text"
+                       id="messageInput"
+                       class="form-control"
+                       placeholder="Enter your message" />
+            </div>
+
+            <button id="sendButton"
+                    class="btn btn-primary">
+                Send Message
+            </button>
+
+            <hr />
+
+            <h5>Chat Messages</h5>
+
+            <div id="messagesList"
+                 style="height:350px; overflow-y:auto; border:1px solid #ddd; padding:15px;">
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+
+<script>
+
+    // Create SignalR connection
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .withAutomaticReconnect()
+        .build();
+
+
+    // Receive messages from server
+    connection.on("ReceiveMessage", function (user, message) {
+
+        const messagesList = document.getElementById("messagesList");
+
+        const messageDiv = document.createElement("div");
+
+        const userElement = document.createElement("strong");
+        userElement.textContent = user + ": ";
+
+        const messageElement = document.createElement("span");
+        messageElement.textContent = message;
+
+        messageDiv.appendChild(userElement);
+        messageDiv.appendChild(messageElement);
+
+        messagesList.appendChild(messageDiv);
+
+        // Automatically scroll to latest message
+        messagesList.scrollTop = messagesList.scrollHeight;
+
+    });
+
+
+    // Connection status
+    connection.onreconnecting(() => {
+        document.getElementById("connectionStatus").textContent =
+            "Reconnecting...";
+    });
+
+    connection.onreconnected(() => {
+        document.getElementById("connectionStatus").textContent =
+            "Connected";
+    });
+
+    connection.onclose(() => {
+        document.getElementById("connectionStatus").textContent =
+            "Disconnected";
+    });
+
+
+    // Start SignalR connection
+    async function startConnection() {
+
+        try {
+
+            await connection.start();
+
+            document.getElementById("connectionStatus").textContent =
+                "Connected";
+
+            console.log("SignalR Connected!");
+
+        }
+        catch (err) {
+
+            document.getElementById("connectionStatus").textContent =
+                "Connection failed";
+
+            console.error(err);
+
+        }
+
+    }
+
+
+    // Send message
+    document.getElementById("sendButton").addEventListener("click", async function () {
+
+        const user = document.getElementById("userInput").value;
+        const message = document.getElementById("messageInput").value;
+
+        if (!user.trim() || !message.trim()) {
+            alert("Please enter your name and message.");
+            return;
+        }
+
+        if (connection.state !== signalR.HubConnectionState.Connected) {
+            alert("SignalR is not connected.");
+            return;
+        }
+
+        try {
+
+            await connection.invoke("SendMessage", user, message);
+
+            document.getElementById("messageInput").value = "";
+            document.getElementById("messageInput").focus();
+
+        }
+        catch (err) {
+
+            console.error(err);
+
+        }
+
+    });
+
+
+    // Start connection
+    startConnection();
+
+</script>
