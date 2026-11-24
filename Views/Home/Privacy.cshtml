@@ -47,8 +47,6 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
-
 <script>
 
     // Create SignalR connection
@@ -103,26 +101,16 @@
     async function startConnection() {
 
         try {
-
             await connection.start();
-
-            document.getElementById("connectionStatus").textContent =
-                "Connected";
-
+            document.getElementById("connectionStatus").textContent = "Connected";
             console.log("SignalR Connected!");
-
         }
         catch (err) {
 
-            document.getElementById("connectionStatus").textContent =
-                "Connection failed";
-
+            document.getElementById("connectionStatus").textContent = "Connection failed";
             console.error(err);
-
         }
-
     }
-
 
     // Send message
     document.getElementById("sendButton").addEventListener("click", async function () {
@@ -141,19 +129,13 @@
         }
 
         try {
-
             await connection.invoke("SendMessage", user, message);
-
             document.getElementById("messageInput").value = "";
             document.getElementById("messageInput").focus();
-
         }
         catch (err) {
-
             console.error(err);
-
         }
-
     });
 
 
