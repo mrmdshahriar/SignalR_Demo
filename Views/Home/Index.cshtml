@@ -13,7 +13,13 @@
         alert(message);
     });
 
-    connection.start().catch(err => console.error(err));
+    connection.start()
+    .then(() => {
+        console.log("SignalR Connected Successfully!");
+    })
+    .catch(err => {
+        console.error("SignalR Connection Error:", err);
+    });
 
 
     async function sendNotification() {
@@ -36,3 +42,31 @@
 <button onclick="sendNotification()">
     Send Notification
 </button>
+
+
+<script>
+    /*
+        const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 5000);
+        }
+    };
+
+    connection.onclose(async () => {
+        await start();
+    });
+
+    // Start the connection.
+    start();
+    */
+
+</script>
