@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SignalR_Demo.styles.css" asp-append-version="true" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
 </head>
 <body>
     <header>
@@ -28,6 +29,25 @@
                     </ul>
                 </div>
             </div>
+
+            <div id="messageNotification"
+                 style="display:none;
+            position:fixed;
+            top:20px;
+            right:20px;
+            background:#198754;
+            color:white;
+            padding:15px 20px;
+            border-radius:8px;
+            z-index:99999;
+            cursor:pointer;">
+
+                <strong>New Message!</strong>
+                <div id="notificationText"></div>
+
+            </div>
+
+            <span id="unreadCount" style="margin-right:20px">0</span>
         </nav>
     </header>
     <div class="container">
